@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { HeroUIProvider } from "@heroui/react";
-import { Route, Routes } from "react-router";
+import { Navigate, Route, Routes } from "react-router";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
@@ -33,11 +33,11 @@ function App() {
 
   useEffect(() => {
     getCurrentUser();
-  }, [])
+  }, []);
 
   return (
     <HeroUIProvider>
-      <Header currentUser={currentUser}/>
+      <Header currentUser={currentUser} />
       <div className="h-screen">
         <Routes>
           <Route
@@ -50,8 +50,24 @@ function App() {
           />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/favorites" element={<Favorites />} />
-          <Route path="/profile/:id" element={<Profile currentUser={currentUser} />} />
+
+          <Route
+            path="/favorites"
+            element={
+              <ProtectedRoute>
+                <Favorites />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile/:id"
+            element={
+              <ProtectedRoute>
+                <Profile currentUser={currentUser} />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<Navigate to={"/"} />} />
         </Routes>
       </div>
     </HeroUIProvider>
